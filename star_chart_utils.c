@@ -631,7 +631,7 @@ void StarPathBuild(Star *current_star, Star *destination, StarArray *path_array,
     }
     neighbors = StarSearchRange(root, current_star, radius);
     radius += 1;
-  } while (neighbors->size < 22);
+  } while (neighbors->size < 5);
 
 //==============================================================================================//
 // ITERATE THROUGH NEIGHBORS CHECKING FOR VISITED, CALCULATE PATH COST, UPDATE AS NECESSARY
@@ -766,5 +766,5 @@ Star* PopMin(StarArray* heap) {
 }
 
 void Peek(StarArray* heap) {
-  printf("Min node: %s\n", heap->stars);
+  printf("Min node: %s\n", heap->stars[0].name);
 }
