@@ -113,7 +113,7 @@ def init():
 
 # ---- Main ----
 if __name__ == "__main__":
-    load_stars("stars.csv")
+    load_stars("data/stars.csv")
     
     glutInit()
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH)
