@@ -6,128 +6,128 @@
 #define PI 3.14159265358979323846
 
 // Forward declaration of KDNode; driven by StarPath (GetNeighbors)
-typedef struct KDNode KDNode;
-typedef struct Position Position;
+typedef struct kd_node kd_node_t;
+typedef struct position position_t;
 
-typedef struct Star {
-	char* name;
-	KDNode* kd_node;
-	Position* position;
-    struct Star* came_from; // For A* path finding
-    char* sp_type;
+typedef struct star {
+	char *name;
+	kd_node_t *kd_node;
+	position_t *position;
+    struct star *came_from; // For A* path finding
+    char *sp_type;
     float jump_range;
     float g_cost;
-	float lightyears;
+	float light_years;
 	float path_cost; // For star path
-} Star;
+} star_t;
 
-typedef struct StarArray {
-	Star* stars;
-	int capacity;
-	int size;
-} StarArray;
+typedef struct star_array {
+	star_t *stars;
+	size_t capacity;
+	size_t size;
+} star_array_t;
 
-typedef struct KDNode {
-	Star* star;
-	struct KDNode* left;
-	struct KDNode* right;
-} KDNode;
+typedef struct kd_node {
+	star_t *star;
+	kd_node_t *left;
+	kd_node_t *right;
+} kd_node_t;
 
-typedef struct Position {
+typedef struct position {
 	double x;
 	double y;
 	double z;
-} Position;
+} position_t;
 
-typedef struct HashEntry {
-	char* key;
-	Star* value;
-	struct HashEntry* next; // For chaining
-} HashEntry;
+typedef struct hash_entry {
+	char *key;
+	star_t *value;
+	struct hash_entry *next; // For chaining
+} hash_entry_t;
 
-typedef struct HashMap {
-	HashEntry** buckets;
+typedef struct hash_map {
+	hash_entry_t **buckets;
 	int count;
 	int size;
-} HashMap;
+} hash_map_t;
 
-typedef struct MinHeap {
-	Star* elements;
+typedef struct min_heap {
+	star_t *elements;
 	int capacity;
 	int size;
-} MinHeap;
+} min_heap_t;
 
 // GLOBAL VARIABLE
-extern Position player_position;
+extern position_t player_position;
 
 // READ DATABASE FILE
-StarArray* ParseFile();
+star_array_t* parse_file();
 
 // CONVERT SPECTRAL TYPE TO "JUMP RANGE" EQUIVALENT
-float GetJumpRange(const char *sp_type);
+float get_jump_range(const char *sp_type);
 
 // CONVERSION MATH TO DETERMINE X, Y, Z, AND NAVIGATION VECTORS
-double Sign(double value);
-double ToDecimalRA(double hours, double minutes, double seconds);
-double ToDecimalDec(double degrees, double minutes, double seconds);
-void ConvertTo3DCoords(double A, double B, double C, double* x, double* y, double* z);
+double sign(double value);
+double to_decimal_ra(double hours, double minutes, double seconds);
+double to_decimal_dec(double degrees, double minutes, double seconds);
+void convert_to_3d_coords(double a, double b, double c, double *x, double *y, double *z);
 
 // DATA STRUCTURE CREATION
-StarArray* CreateStarArray();
-KDNode* CreateBalancedKDTree(Star** stars, int start, int end, int depth);
-HashMap* CreateHashMap(StarArray* star_array, int size);
+star_array_t* create_star_array();
+kd_node_t* create_balanced_kd_tree(star_t **stars, int start, int end, int depth);
+hash_map_t* create_hash_map(star_array_t *star_array, int size);
 
 // ARRAY UTILITY FUNCTIONS
-void AddStarToArray(StarArray* array, Star* star);
-void OptimizeStarArraySize(StarArray* array);
-void PrintStarValues(StarArray* array);
-void DeallocSubStarArray(StarArray* array);
-void DeallocMainStarArray(StarArray* array);
+void add_star_to_array(star_array_t *array, star_t *star);
+void optimize_star_array_size(star_array_t *array);
+void print_star_values(star_array_t *array);
+void dealloc_sub_star_array(star_array_t *array);
+void dealloc_main_star_array(star_array_t *array);
 
 // KD-TREE UTILITY FUNCTIONS
 //TODO: Notice that the GetNeighbors wrapper returns StarArray* but it's worker function returns void, because we're calling the worker function
 //      as a variable in the wrapper. Mimic that structure for NearestNeighbor
 
-StarArray* GetNeighbors(KDNode* root, Position *center, float radius);
-void RadiusSearch(KDNode* node, Position *center, float radius, int depth, StarArray* result);
-Star* NearestNeighbor(KDNode* root, const Position reference);
-Star* NearestNeighborSearch(KDNode* root, const Position reference, int depth, Star* current_closest_star, double* current_best_distance);
-Star* FindNearestReachableStar(Star* destination, KDNode* root, HashMap *map);
-void PrintKDTree(KDNode* node);
-void DeallocKDTree(KDNode* node);
+star_array_t* get_neighbors(kd_node_t *root, position_t *center, float radius);
+void radius_search(kd_node_t *node, position_t *center, float radius, int depth, star_array_t *result);
+star_t* nearest_neighbor(kd_node_t *root, const position_t reference);
+star_t* nearest_neighbor_search(kd_node_t *root, const position_t reference, int depth, star_t *current_closest_star, double *current_best_distance);
+star_t* find_nearest_reachable_star(star_t *destination, kd_node_t *root, hash_map_t *map);
+void print_kd_tree(kd_node_t *node);
+void dealloc_kd_tree(kd_node_t *node);
 
 // HASHMAP UTILITY FUNCTIONS
-unsigned long hash(const char* key);
-void ResizeHashMap(HashMap* map);
-void AddToHashMap(HashMap* map, const char* key, Star* value);
-Star* GetFromHashMap(HashMap* map, const char* key);
-void DeallocHashMap(HashMap* map);
+unsigned long hash(const char *key);
+void resize_hash_map(hash_map_t *map);
+void add_to_hash_map(hash_map_t *map, const char *key, star_t *value);
+star_t* get_from_hash_map(hash_map_t *map, const char *key);
+void dealloc_hash_map(hash_map_t *map);
 
 // OTHER UTILITY FUNCTIONS
-void SetPlayerPosition(float x, float y, float z);
-double CalculateDistance(const Star* star, const Position reference);
-int CompareNodeX(const void* a, const void* b);
-int CompareNodeY(const void* a, const void* b);
-int CompareNodeZ(const void* a, const void* b);
-double CalculateDistanceToPosition(Star* star, Position* pos);
+void set_player_position(float x, float y, float z);
+double calculate_distance(const star_t *star, const position_t reference);
+int compare_node_x(const void *a, const void *b);
+int compare_node_y(const void *a, const void *b);
+int compare_node_z(const void *a, const void *b);
+double calculate_distance_to_position(star_t *star, position_t *pos);
 
 
 // STAR PATH FUNCTIONS
-void StarPath(const char* destination_key, KDNode* root, HashMap* map, StarArray* star_array);
-StarArray* StarPathBuild(Star* destination, StarArray* array, KDNode* root, HashMap *map,  HashMap *visited);
-void PrintStarPath(StarArray* array);
-float CalculateEuclideanDistance(Star* current, Star* goal);
-void ResetStarPathState(StarArray *array);
+void star_path(const char *destination_key, kd_node_t *root, hash_map_t *map, star_array_t *star_array);
+star_array_t* star_path_build(star_t *destination, star_array_t *array, kd_node_t *root, hash_map_t *map,  hash_map_t *visited);
+void print_star_path(star_array_t *array);
+float calculate_euclidean_distance(star_t *current, star_t *goal);
+void reset_star_path_state(star_array_t *array);
 
 // HEAP FUNCTIONS
-void Heapify(StarArray* heap);
-void AddToHeap(StarArray* heap, Star* node);
-void SiftUp(StarArray* heap, int index);
-void SiftDown(StarArray* heap, int index);
-Star* PopMin(StarArray* heap);
-void Peek(StarArray* heap);
+void heapify(star_array_t *heap);
+void add_to_heap(star_array_t *heap, star_t *node);
+void sift_up(star_array_t *heap, size_t index);
+void sift_down(star_array_t *heap, size_t index);
+star_t* pop_min(star_array_t *heap);
+void peek(star_array_t *heap);
 
 // SECURITY UTIL FUNCTIONS
-void SecureZero(void *ptr, size_t size);
+void secure_zero(void *ptr, size_t size);
 
 #endif
