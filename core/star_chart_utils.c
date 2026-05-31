@@ -6,11 +6,11 @@
 #include <float.h>
 
 // GLOBAL VARIABLES
-position_t player_position = {0.0, 0.0, 0.0}; // Sol
-// Position player_position = {0.01, 0.0, 0.01}; // Sol-ish
+    // position_t player_position = {0.0, 0.0, 0.0}; // Sol
+    position_t player_position = {0.01, 0.0, 0.01}; // Sol-ish
 
-// Position player_position = {10.29, 5.02, -3.27}; // Tau Ceti
-// Position player_position = {10.28, 5.02, -3.29}; //Tau Ceti-ish
+    // position_t player_position = {10.29, 5.02, -3.27}; // Tau Ceti
+    // position_t player_position = {10.28, 5.02, -3.29}; //Tau Ceti-ish
 
 // READ DATABASE FILE
 star_array_t* parse_file() {
@@ -36,7 +36,7 @@ star_array_t* parse_file() {
             token = strtok(NULL, ",");
         }
 
-        if (token_count == max_tokens) {
+        if (token_count >= 8) {
             char *name = tokens[0];
             int ra_hours = (int)strtod(tokens[1], NULL);
             double ra_minutes = strtod(tokens[2], NULL);
@@ -45,7 +45,7 @@ star_array_t* parse_file() {
             double dec_minutes = strtod(tokens[5], NULL);
             double dec_seconds = strtod(tokens[6], NULL);
             float light_years = strtod(tokens[7], NULL);
-            char *sp_type = tokens[8];
+            char *sp_type = (token_count == 9) ? (char *)tokens[8] : ""; //Used to handle stars with no sp_type field from the query
 
             star_t new_star;
             new_star.name = strdup(name);
@@ -68,10 +68,11 @@ star_array_t* parse_file() {
                     light_years, &new_star.position->x, &new_star.position->y, &new_star.position->z);
 
             add_star_to_array(array, &new_star);
-        }
+        }  
     }
 
     optimize_star_array_size(array);
+    printf("Loaded %ld stars from SIMBAD catalog\n", array->size);
 
     fclose(file);
     return array;
@@ -714,17 +715,18 @@ star_array_t* star_path_build(star_t *destination, star_array_t *open_set, kd_no
 }               
 
 void print_star_path(star_array_t *array) {
+    printf("Path:\n");
     for (size_t i = 0; i < array->size; i++) {
         printf("%s", array->stars[i].name);
         if (array->size > 0 && i < array->size - 1) {
             printf(" -> ");
         }
-    } printf("\n");
+    } printf("\n\n");
 
     float total = 0;
     for (size_t i = 0; i < array->size - 1; i++) {
         float hop = calculate_euclidean_distance(&array->stars[i], &array->stars[i + 1]);
-        printf(" %s -> %s: %.2f ly\n", array->stars[i].name, array->stars[i + 1].name, hop);
+        //printf(" %s -> %s: %.2f ly\n", array->stars[i].name, array->stars[i + 1].name, hop);
         total += hop;
     }
     printf("Total distance: %.2f ly\n", total);

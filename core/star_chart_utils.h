@@ -85,8 +85,8 @@ void dealloc_sub_star_array(star_array_t *array);
 void dealloc_main_star_array(star_array_t *array);
 
 // KD-TREE UTILITY FUNCTIONS
-//TODO: Notice that the GetNeighbors wrapper returns StarArray* but it's worker function returns void, because we're calling the worker function
-//      as a variable in the wrapper. Mimic that structure for NearestNeighbor
+//TODO: Notice that the get_neighbors wrapper returns star_array_t* but it's worker function returns void, because we're calling the worker function
+//      as a variable in the wrapper. Mimic that structure for nearest_neighbor()
 
 star_array_t* get_neighbors(kd_node_t *root, position_t *center, float radius);
 void radius_search(kd_node_t *node, position_t *center, float radius, int depth, star_array_t *result);

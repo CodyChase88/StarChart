@@ -1,0 +1,48 @@
+Research Ideas
+--------------
+- Procedurally generated galaxies
+- Procedurally generated planetary systems
+- Faction and economy simulation
+- Dynamic trade routes
+
+StarChart Future Development
+============================
+
+Version 1.1
+-----------
+- Config file support
+- Command line arguments
+- Improved error handling
+- Star lookup commands
+
+Version 1.2
+-----------
+- Binary star catalog format
+- Player jump distance/jump drive heuristics
+- Player jump count to destination/nearest star
+- Save/load generated structures
+
+Version 1.3
+-----------
+- Replace 'reset_star_path_state()' with search ID pattern
+- Create a reverse_star_path() helper function to call
+- Mimic get_neighbors() helper function call in nearest_neighbor()
+- Double check secure_zero usage and placment
+- Refine radius, distance, neighbor search functions (eliminate redundancy)
+
+Research Ideas
+--------------
+- Octrees vs KD-trees
+- Alternative pathfinding heuristics
+- Parallel catalog loading
+- Serialization formats
+- Procedurally generated galaxies
+- Procedurally generated planetary systems
+- Faction and economy simulation
+- Dynamic trade routes
+
+Stretch Goals
+-------------
+- Interactive terminal UI
+- OpenGL visualization
+- Networked navigation service

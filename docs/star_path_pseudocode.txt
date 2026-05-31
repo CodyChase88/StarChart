@@ -1,0 +1,33 @@
+star_path():
+    1. Create structure (array) to hold open set
+    2. Create structure (hashmap) to hold visited list
+    3. Call nearest_neighbor() to set origin
+    4. Update origin g_cost
+    5. Update origin path_cost
+        a. g_cost + calculate_euclidean_distance()
+    6. Add origin to open set before passing to star_path_build()
+    7. Call star_path_build()
+
+star_path_build():
+    1. current_star = pop_min(open_set);
+        a. Is current star the destination?
+            i. Yes? Reconstruct and return path using came_from pointers
+        b. Is current star already in visited list?
+            i. Skip
+            ii. Repeat from step 0
+    2. If curr star is not in visited list, add to visited list
+    3. Radius = distance(current, destination) * 0.5
+        repeat:
+            neighbors = get_neighbors(root, current, radius)
+            if neighbors < 5: radius += 1
+            until neighbors >= 5
+    4. Find Euclidean distance to each neighbor and update
+        a. tentative_g_cost = g_cost + distance(current, neighbor)
+            i. If tentative_g_cost < neighbor->g_cost
+                1. Update neighbor's path_cost
+                2. Update neighbor->came_from to current star
+    5. Add each neighbor of current star to open set
+        a. Append each neighbor to end of heap
+        b. Call sift_up() to correct heap violations
+    6. Loop back to step 0
+
