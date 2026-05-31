@@ -5,7 +5,8 @@ LDFLAGS = -lm
 TARGET  = sc
 
 SRCS    = core/star_chart.c core/star_chart_utils.c
-OBJS    = $(SRCS:.c=.o)
+OBJDIR	= obj
+OBJS    = $(SRCS:core/%.c=$(OBJDIR)/%.o)
 
 # 🧪 Toggle: enable with `make SANITIZE=1`
 SANITIZE ?= 0
@@ -20,11 +21,12 @@ all: $(TARGET)
 $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS) $(LDFLAGS)
 
-%.o: %.c
+$(OBJDIR)/%.o: core/%.c
+	mkdir -p $(OBJDIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJS) $(TARGET)
+	rm -rf $(OBJDIR) $(TARGET)
 
 re: clean all
 
